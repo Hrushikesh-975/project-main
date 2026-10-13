@@ -6,7 +6,7 @@ A modern, responsive, secure, and production-ready resort website and booking ma
 
 ## 🌲 Project Overview
 
-Ajara Nisarga Resort is a nature-focused resort near Parewadi & Pethewadi, Ajara, Kolhapur District, Maharashtra. This web application provides visitors with an immersive, conversion-focused resort presentation, cottage showcase, local sightseeing guide, event package planner, and interactive WhatsApp booking integration, backed by a secure Express/SQLite management portal for resort administrators.
+ Resort is a nature-focused resort near Parewadi & Pethewadi, Ajara, Kolhapur District, Maharashtra. This web application provides visitors with an immersive, conversion-focused resort presentation, cottage showcase, local sightseeing guide, event package planner, and interactive WhatsApp booking integration, backed by a secure Express/SQLite management portal for resort administrators.
 
 ---
 
