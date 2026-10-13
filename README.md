@@ -1,4 +1,4 @@
-# Ajara Nisarga Resort — Web Application & Booking Engine
+#  — Web Application & Booking Engine
 
 A modern, responsive, secure, and production-ready resort website and booking management system built for **Ajara Nisarga Resort** in Ajara, Maharashtra.
 
