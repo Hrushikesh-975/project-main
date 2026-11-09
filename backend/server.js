@@ -306,7 +306,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, error: 'An unexpected server error occurred.' });
 });
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Ajara Nisarga Resort Backend running on port ${PORT}`);
 });
 
