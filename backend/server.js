@@ -296,8 +296,15 @@ app.patch('/api/event-bookings/:id/status', requireAdminAuth, (req, res) => {
 });
 
 // Centralized 404 handler for unknown API routes
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ success: false, error: 'API route not found' });
+// Centralized 404 handler for unknown API routes
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({
+      success: false,
+      error: 'API route not found'
+    });
+  }
+  next();
 });
 
 // Centralized error handler
