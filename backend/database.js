@@ -1,35 +1,27 @@
+
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-// Persistent database location on Azure.
-// Local development continues using the backend folder.
+// Persistent database location on Azure
+// Local development uses the backend folder
 const dbPath = process.env.DB_PATH || path.join(__dirname, 'bookings.db');
 
-// Ensure the database directory exists
+// Ensure database directory exists
 fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 
+// Create database connection
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Error opening database:', err.message);
   } else {
-    console.log('Connected to the SQLite database at:', dbPath);
-    initializeDatabase();
-  }
-});
-
-const dbPath = path.join(__dirname, 'bookings.db');
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Error opening database:', err.message);
-  } else {
-    console.log('Connected to the SQLite database at:', dbPath);
+    console.log('Connected to SQLite database at:', dbPath);
     initializeDatabase();
   }
 });
 
 function initializeDatabase() {
-  // 1. Create stay_bookings table if it does not exist
+  // 1. Stay bookings table
   db.run(`
     CREATE TABLE IF NOT EXISTS stay_bookings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,8 +41,7 @@ function initializeDatabase() {
     )
   `, (err) => {
     if (err) console.error('Error creating stay_bookings table:', err.message);
-    
-    // Safe Column Migrations (uses constant defaults for SQLite ALTER TABLE compatibility)
+
     migrateColumns('stay_bookings', [
       { name: 'booking_reference', type: 'TEXT' },
       { name: 'phone', type: "TEXT DEFAULT ''" },
@@ -67,7 +58,7 @@ function initializeDatabase() {
     });
   });
 
-  // 2. Create event_bookings table if it does not exist
+  // 2. Event bookings table
   db.run(`
     CREATE TABLE IF NOT EXISTS event_bookings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,7 +80,6 @@ function initializeDatabase() {
   `, (err) => {
     if (err) console.error('Error creating event_bookings table:', err.message);
 
-    // Safe Column Migrations
     migrateColumns('event_bookings', [
       { name: 'booking_reference', type: 'TEXT' },
       { name: 'email', type: "TEXT DEFAULT ''" },
@@ -123,15 +113,22 @@ function migrateColumns(tableName, columns, doneCallback) {
 
     columns.forEach(col => {
       if (!existingNames.includes(col.name)) {
-        db.run(`ALTER TABLE ${tableName} ADD COLUMN ${col.name} ${col.type}`, (alterErr) => {
-          if (alterErr) {
-            console.error(`Error adding column ${col.name} to ${tableName}:`, alterErr.message);
-          } else {
-            console.log(`Successfully added column ${col.name} to ${tableName}`);
+        db.run(
+          `ALTER TABLE ${tableName} ADD COLUMN ${col.name} ${col.type}`,
+          (alterErr) => {
+            if (alterErr) {
+              console.error(
+                `Error adding column ${col.name} to ${tableName}:`,
+                alterErr.message
+              );
+            } else {
+              console.log(`Successfully added column ${col.name} to ${tableName}`);
+            }
+
+            pending--;
+            if (pending === 0 && doneCallback) doneCallback();
           }
-          pending--;
-          if (pending === 0 && doneCallback) doneCallback();
-        });
+        );
       } else {
         pending--;
         if (pending === 0 && doneCallback) doneCallback();
